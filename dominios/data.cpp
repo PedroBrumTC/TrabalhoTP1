@@ -1,37 +1,45 @@
 #include "data.hpp"
 
+/**
+ * @details Valida o formato DD/MM/AAAA verificando tamanho e separadores.
+ * Extrai dia, mês e ano como inteiros e verifica os limites: ano entre 2000
+ * e 2999, mês entre 1 e 12, e dia dentro do intervalo correto para o mês
+ * informado. Aplica a regra de ano bissexto para fevereiro: divisível por 4
+ * e não por 100, ou divisível por 400.
+ */
 void Data::validar(string valor) {
-    // 1. Valida��o b�sica de formato (tamanho e barras)
+
+    // Valida formato básico: tamanho 10 e separadores nas posições corretas
     if (valor.length() != 10 || valor[2] != '/' || valor[5] != '/') {
-        throw invalid_argument("Formato inv�lido. Use DD/MM/AAAA.");
+        throw invalid_argument("Formato invalido. Use DD/MM/AAAA.");
     }
 
-    // 2. Extra��o e convers�o
+    // Extrai e converte dia, mês e ano
     int dia = stoi(valor.substr(0, 2));
     int mes = stoi(valor.substr(3, 2));
     int ano = stoi(valor.substr(6, 4));
 
-    // 3. Valida��o dos limites do M�s e do Ano
+    // Valida limites do ano e do mês
     if (ano < 2000 || ano > 2999) {
         throw invalid_argument("Ano fora do intervalo permitido (2000-2999).");
     }
     if (mes < 1 || mes > 12) {
-        throw invalid_argument("M�s inv�lido.");
+        throw invalid_argument("Mes invalido.");
     }
 
-    // 4. Valida��o dos Dias por M�s (considerando bissexto)
-    int diasNoMes = 31; // Padr�o m�ximo
+    // Determina o número máximo de dias para o mês informado
+    int diasNoMes = 31;
 
     if (mes == 4 || mes == 6 || mes == 9 || mes == 11) {
         diasNoMes = 30;
     } else if (mes == 2) {
-        // Aplica a l�gica do bissexto que aprendemos
+        // Ano bissexto: divisível por 4 e não por 100, ou divisível por 400
         bool bissexto = (ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0);
         diasNoMes = bissexto ? 29 : 28;
     }
 
-    // Verifica se o dia fornecido est� no intervalo correto para aquele m�s espec�fico
+    // Valida o dia dentro do intervalo correto para o mês e ano
     if (dia < 1 || dia > diasNoMes) {
-        throw invalid_argument("Dia inv�lido para o m�s/ano especificado.");
+        throw invalid_argument("Dia invalido para o mes/ano especificado.");
     }
 }
